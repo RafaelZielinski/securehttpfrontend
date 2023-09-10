@@ -14,7 +14,7 @@ import { UserService } from 'src/app/service/user.service';
 })
 export class LoginComponent {
 
-  loginState$: Observable<LoginState | any> = of({ dataState: DataState.LOADED });
+  loginState$: Observable<LoginState | any> = of({ dataState: DataState.LOADED, isUsingMfa:true});
   private phoneSubject = new BehaviorSubject<string | null>(null);
   private emailSubject = new BehaviorSubject<string | null>(null);
   readonly DataState = DataState;
@@ -42,6 +42,27 @@ export class LoginComponent {
           return of({ dataState: DataState.ERROR, isUsingMfa: false, loginSuccess: false, error })
         })
       )
+  }
+
+
+  verifyCode(verifyCodeForm: NgForm): void {
+    this.loginState$ = this.userService.verifyCode$(this.emailSubject.value, verifyCodeForm.value.code)
+      .pipe(
+        map(response => {
+            localStorage.setItem(Key.TOKEN, response.data.access_token);
+            localStorage.setItem(Key.REFRESH_TOKEN, response.data.refresh_token);
+            this.router.navigate(['/']);
+            return { DataState: DataState.LOADED, loginSuccess: true };
+        }),
+        startWith({ DataState: DataState.LOADING, IsUsingMfa: false }),
+        catchError((error: string) => {
+          return of({ dataState: DataState.ERROR, isUsingMfa: false, loginSuccess: false, error })
+        })
+      )
+  }
+
+  loginPage(): void {
+    this.loginState$ = of({dataState: DataState.LOADED})
   }
 }
 
