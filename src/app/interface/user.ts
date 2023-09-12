@@ -8,9 +8,9 @@ export interface User {
       title?: string;
       bio: string;
       imageUrl?: string;
-      enabled: string;
-      isNotLocked: string;
-      isUsingMfa: string;
+      enabled: boolean;
+      isNotLocked: boolean;
+      usingMfa: boolean;
       createdAt?: Date;
       roleName: string;
       permissions: string;

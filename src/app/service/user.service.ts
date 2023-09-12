@@ -14,7 +14,7 @@ export class UserService {
 
   login$ = (email: string, password: string) => <Observable<CustomHttpResponse<Profile>>>
     this.http.post<CustomHttpResponse<Profile>>
-    ('${this.server}/user/login', {email, password})
+    (`${this.server}/user/login`, {email, password})
       .pipe(
         tap(console.log),
         catchError(this.handleError)
@@ -22,7 +22,7 @@ export class UserService {
 
   verifyCode$ = (email: string, code: string) => <Observable<CustomHttpResponse<Profile>>>
     this.http.get<CustomHttpResponse<Profile>>
-    ('${this.server}/user/verify/${email}/${code}')
+    (`${this.server}/user/verify/code/${email}/${code}`)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
@@ -30,13 +30,17 @@ export class UserService {
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage: string;
+    console.log(errorMessage);
     if (error.error instanceof ErrorEvent) {
       errorMessage = `A client error occured - ${error.error.message}`
+      console.log(errorMessage)
     } else {
       if (error.error.reason) {
         errorMessage = error.error.reason;
+        console.log(errorMessage);
       } else {
         errorMessage = `An error occured - Error codeStatus ${error.status}`;
+        console.log(errorMessage)
       }
     }
     return throwError(() => errorMessage);

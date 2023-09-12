@@ -14,7 +14,7 @@ import { UserService } from 'src/app/service/user.service';
 })
 export class LoginComponent {
 
-  loginState$: Observable<LoginState | any> = of({ dataState: DataState.LOADED, isUsingMfa:true});
+  loginState$: Observable<LoginState | any> = of({ dataState: DataState.LOADED});
   private phoneSubject = new BehaviorSubject<string | null>(null);
   private emailSubject = new BehaviorSubject<string | null>(null);
   readonly DataState = DataState;
@@ -23,11 +23,11 @@ export class LoginComponent {
   login(loginForm: NgForm): void {
     this.loginState$ = this.userService.login$(loginForm.value.email, loginForm.value.password)
       .pipe(map(response => {
-        if (response.data.user.isUsingMfa) {
+        if (response.data.user.usingMfa) {
           this.phoneSubject.next(response.data.user.phone);
           this.emailSubject.next(response.data.user.email);
           return {
-            DataState: DataState.LOADED, loginSuccess: true, loginSucess: false,
+            DataState: DataState.LOADED, isUsingMfa: true, loginSucess: false,
             phone: response.data.user.phone.substring(response.data.user.phone.length - 4)
           }
         } else {
@@ -37,9 +37,9 @@ export class LoginComponent {
           return { DataState: DataState.LOADED, loginSuccess: true };
         }
       }),
-        startWith({ DataState: DataState.LOADING, IsUsingMfa: false }),
+        startWith({ DataState: DataState.LOADING, usingMfa: false }),
         catchError((error: string) => {
-          return of({ dataState: DataState.ERROR, isUsingMfa: false, loginSuccess: false, error })
+          return of({ dataState: DataState.ERROR, usingMfa: false, loginSuccess: false, error })
         })
       )
   }
@@ -54,9 +54,11 @@ export class LoginComponent {
             this.router.navigate(['/']);
             return { DataState: DataState.LOADED, loginSuccess: true };
         }),
-        startWith({ DataState: DataState.LOADING, IsUsingMfa: false }),
+        startWith({ DataState: DataState.LOADING, isUsingMfa: true, loginSuccess:true,
+        phone: this.phoneSubject.value.substring(this.phoneSubject.value.length - 4)}),
         catchError((error: string) => {
-          return of({ dataState: DataState.ERROR, isUsingMfa: false, loginSuccess: false, error })
+          return of({ dataState: DataState.ERROR, isUsingMfa: true, loginSuccess: false, error,
+            phone: this.phoneSubject.value.substring(this.phoneSubject.value.length - 4)})
         })
       )
   }
