@@ -16,7 +16,7 @@ const routes: Routes = [
   { path: 'user/verify/password/:key', component: VerifyComponent },
   { path: 'customers', component: CustomerComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: '', component: HomeComponent },
+  { path: 'home', component: HomeComponent },
   { path: '', redirectTo: '/', pathMatch: 'full' },
   { path: '**', component: HomeComponent },
 ];
