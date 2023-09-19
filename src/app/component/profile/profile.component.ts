@@ -14,7 +14,7 @@ import {NgForm} from "@angular/forms";
 export class ProfileComponent implements OnInit {
   profileState$: Observable<State<CustomHttpResponse<Profile>>>;
   private dataSubject = new BehaviorSubject<CustomHttpResponse<Profile>>(null);
-  private isLoadingubject = new BehaviorSubject<Boolean>(false);
+  private isLoadingubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingubject.asObservable();
   readonly DataState = DataState;
 
