@@ -60,7 +60,7 @@
             </div>
             <div *ngIf="state.dataState === DataState.ERROR"  class="alert alert-danger bg-danger text-light border-2 alert-dismissible fade show" role="alert">
               {{state.error}}
-              <button  type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             <form #verifyCodeForm="ngForm" (ngSubmit)="verifyCode(verifyCodeForm)">
               <div class="form-outline mb-4">

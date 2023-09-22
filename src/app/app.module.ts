@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http'
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -9,6 +9,14 @@ import { RegisterComponent } from './component/register/register.component';
 import { VerifyComponent } from './component/verify/verify.component';
 import { ResetpasswordComponent } from './component/resetpassword/resetpassword.component';
 import {FormsModule} from "@angular/forms";
+import { CustomerComponent } from './component/customer/customer.component';
+import { ProfileComponent } from './component/profile/profile.component';
+import { CustomersComponent } from './component/customers/customers.component';
+import { HomeComponent } from './component/home/home.component';
+import { NavbarComponent } from './component/navbar/navbar.component';
+import { StatsComponent } from './component/stats/stats.component';
+import {TokenInterceptor} from "./interceptor/token.interceptor";
+
 
 @NgModule({
   declarations: [
@@ -16,7 +24,13 @@ import {FormsModule} from "@angular/forms";
     LoginComponent,
     RegisterComponent,
     VerifyComponent,
-    ResetpasswordComponent
+    ResetpasswordComponent,
+    CustomerComponent,
+    ProfileComponent,
+    CustomersComponent,
+    HomeComponent,
+    NavbarComponent,
+    StatsComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +38,7 @@ import {FormsModule} from "@angular/forms";
     HttpClientModule,
     FormsModule
   ],
-  providers: [],
+  providers: [ { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
