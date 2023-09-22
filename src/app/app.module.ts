@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http'
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -15,6 +15,7 @@ import { CustomersComponent } from './component/customers/customers.component';
 import { HomeComponent } from './component/home/home.component';
 import { NavbarComponent } from './component/navbar/navbar.component';
 import { StatsComponent } from './component/stats/stats.component';
+import {TokenInterceptor} from "./interceptor/token.interceptor";
 
 
 @NgModule({
@@ -30,7 +31,6 @@ import { StatsComponent } from './component/stats/stats.component';
     HomeComponent,
     NavbarComponent,
     StatsComponent
-
   ],
   imports: [
     BrowserModule,
@@ -38,7 +38,7 @@ import { StatsComponent } from './component/stats/stats.component';
     HttpClientModule,
     FormsModule
   ],
-  providers: [],
+  providers: [ { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
