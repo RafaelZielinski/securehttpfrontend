@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {BehaviorSubject, catchError, map, Observable, of, startWith} from "rxjs";
-import {CustomHttpResponse, LoginState, Profile} from "../../interface/appstates";
-import {UserService} from "../../service/user.service";
-import {State} from "../../interface/state";
-import {DataState} from "../../enum/datastate.enum";
-import {NgForm} from "@angular/forms";
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject, catchError, map, Observable, of, startWith } from "rxjs";
+import { CustomHttpResponse, LoginState, Profile } from "../../interface/appstates";
+import { UserService } from "../../service/user.service";
+import { State } from "../../interface/state";
+import { DataState } from "../../enum/datastate.enum";
+import { NgForm } from "@angular/forms";
 
 @Component({
   selector: 'app-profile',
@@ -18,7 +18,8 @@ export class ProfileComponent implements OnInit {
   isLoading$ = this.isLoadingubject.asObservable();
   readonly DataState = DataState;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService) {
+  }
 
   ngOnInit(): void {
     this.profileState$ = this.userService.profile$()
@@ -28,7 +29,7 @@ export class ProfileComponent implements OnInit {
           this.dataSubject.next(response);
           return { dataState: DataState.LOADED, appData: response };
         }),
-        startWith({dataState: DataState.LOADING}),
+        startWith({ dataState: DataState.LOADING }),
         catchError((error: string) => {
           return of({ dataState: DataState.ERROR, appData: this.dataSubject.value, error })
         })
@@ -41,15 +42,42 @@ export class ProfileComponent implements OnInit {
       .pipe(
         map(response => {
           console.log(response);
-          this.dataSubject.next({...response, data: response.data });
+          this.dataSubject.next({ ...response, data: response.data });
           this.isLoadingubject.next(false);
           return { dataState: DataState.LOADED, appData: this.dataSubject.value };
         }),
-        startWith({dataState: DataState.LOADED, appData: this.dataSubject.value }),
+        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
         catchError((error: string) => {
           this.isLoadingubject.next(false);
           return of({ dataState: DataState.ERROR, appData: this.dataSubject.value, error })
         })
       )
   }
+
+  updatePassword(passwordForm: NgForm): void {
+    this.isLoadingubject.next(true);
+    if (passwordForm.value.newPassword === passwordForm.value.confirmNewPassword) {
+      this.profileState$ = this.userService.updatePassword$(passwordForm.value)
+        .pipe(
+          map(response => {
+            console.log(response);
+            this.isLoadingubject.next(false);
+            passwordForm.reset();
+            return { dataState: DataState.LOADED, appData: this.dataSubject.value };
+          }),
+          startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+          catchError((error: string) => {
+            this.isLoadingubject.next(false);
+            passwordForm.reset();
+            return of({ dataState: DataState.ERROR, appData: this.dataSubject.value, error })
+          })
+        )
+    } else {
+      passwordForm.reset();
+      this.isLoadingubject.next(false);
+      console.log('Passwords don\'t mutch');
+    }
+  }
+
+
 }

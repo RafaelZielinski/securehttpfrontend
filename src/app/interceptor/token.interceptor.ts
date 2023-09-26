@@ -24,7 +24,7 @@ export class TokenInterceptor implements HttpInterceptor {
             || request.url.includes('refresh') || request.url.includes('resetpassword')) {
           return next.handle(request);
       }
-    console.log("It works");
+
     return next.handle(this.addAuthorizationTokenHeader(request, localStorage.getItem(Key.TOKEN)))
       .pipe(
         catchError((error: HttpErrorResponse) => {
