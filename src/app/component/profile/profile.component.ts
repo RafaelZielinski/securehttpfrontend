@@ -80,4 +80,24 @@ export class ProfileComponent implements OnInit {
   }
 
 
+  updateRole(roleForm: NgForm): void {
+    this.isLoadingubject.next(true);
+    console.log(roleForm);
+    this.profileState$ = this.userService.updateRole$(roleForm.value.roleName)
+      .pipe(
+        map(response => {
+          console.log(response);
+          this.dataSubject.next({ ...response, data: response.data });
+          this.isLoadingubject.next(false);
+          return { dataState: DataState.LOADED, appData: this.dataSubject.value };
+        }),
+        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+        catchError((error: string) => {
+          this.isLoadingubject.next(false);
+          return of({ dataState: DataState.ERROR, appData: this.dataSubject.value, error })
+        })
+      )
+  }
+
+
 }
