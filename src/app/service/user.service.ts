@@ -68,6 +68,16 @@ export class UserService {
         catchError(this.handleError)
       );
 
+  updateRole$ = (roleName: string) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.patch<CustomHttpResponse<Profile>>
+    (`${this.server}/user/update/role/${roleName}`, {})
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+
+
   private handleError(error: HttpErrorResponse): Observable<never> {
     console.log(error);
     let errorMessage: string;
