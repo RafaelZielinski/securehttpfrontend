@@ -18,7 +18,8 @@ export class ProfileComponent implements OnInit {
   isLoading$ = this.isLoadingubject.asObservable();
   readonly DataState = DataState;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) {
+  }
 
   ngOnInit(): void {
     this.profileState$ = this.userService.profile$()
@@ -26,11 +27,11 @@ export class ProfileComponent implements OnInit {
         map(response => {
           console.log(response);
           this.dataSubject.next(response);
-          return { dataState: DataState.LOADED, appData: response };
+          return {dataState: DataState.LOADED, appData: response};
         }),
-        startWith({ dataState: DataState.LOADING }),
+        startWith({dataState: DataState.LOADING}),
         catchError((error: string) => {
-          return of({ dataState: DataState.ERROR, appData: this.dataSubject.value, error })
+          return of({dataState: DataState.ERROR, appData: this.dataSubject.value, error})
         })
       )
   }
@@ -41,14 +42,14 @@ export class ProfileComponent implements OnInit {
       .pipe(
         map(response => {
           console.log(response);
-          this.dataSubject.next({ ...response, data: response.data });
+          this.dataSubject.next({...response, data: response.data});
           this.isLoadingubject.next(false);
-          return { dataState: DataState.LOADED, appData: this.dataSubject.value };
+          return {dataState: DataState.LOADED, appData: this.dataSubject.value};
         }),
-        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+        startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
           this.isLoadingubject.next(false);
-          return of({ dataState: DataState.LOADED, appData: this.dataSubject.value, error })
+          return of({dataState: DataState.LOADED, appData: this.dataSubject.value, error})
         })
       )
   }
@@ -62,13 +63,13 @@ export class ProfileComponent implements OnInit {
             console.log(response);
             passwordForm.reset();
             this.isLoadingubject.next(false);
-            return { dataState: DataState.LOADED, appData: this.dataSubject.value };
+            return {dataState: DataState.LOADED, appData: this.dataSubject.value};
           }),
-          startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+          startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
           catchError((error: string) => {
             passwordForm.reset();
             this.isLoadingubject.next(false);
-            return of({ dataState: DataState.ERROR, appData: this.dataSubject.value, error })
+            return of({dataState: DataState.ERROR, appData: this.dataSubject.value, error})
           })
         )
     } else {
@@ -85,14 +86,14 @@ export class ProfileComponent implements OnInit {
       .pipe(
         map(response => {
           console.log(response);
-          this.dataSubject.next({ ...response, data: response.data });
+          this.dataSubject.next({...response, data: response.data});
           this.isLoadingubject.next(false);
-          return { dataState: DataState.LOADED, appData: this.dataSubject.value };
+          return {dataState: DataState.LOADED, appData: this.dataSubject.value};
         }),
-        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+        startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
           this.isLoadingubject.next(false);
-          return of({ dataState: DataState.LOADED, appData: this.dataSubject.value, error })
+          return of({dataState: DataState.LOADED, appData: this.dataSubject.value, error})
         })
       )
   }
@@ -103,14 +104,14 @@ export class ProfileComponent implements OnInit {
       .pipe(
         map(response => {
           console.log(response);
-          this.dataSubject.next({ ...response, data: response.data });
+          this.dataSubject.next({...response, data: response.data});
           this.isLoadingubject.next(false);
-          return { dataState: DataState.LOADED, appData: this.dataSubject.value };
+          return {dataState: DataState.LOADED, appData: this.dataSubject.value};
         }),
-        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+        startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
           this.isLoadingubject.next(false);
-          return of({ dataState: DataState.LOADED, appData: this.dataSubject.value, error })
+          return of({dataState: DataState.LOADED, appData: this.dataSubject.value, error})
         })
       )
   }
@@ -122,16 +123,44 @@ export class ProfileComponent implements OnInit {
       .pipe(
         map(response => {
           console.log(response);
-          this.dataSubject.next({ ...response, data: response.data });
+          this.dataSubject.next({...response, data: response.data});
           this.isLoadingubject.next(false);
-          return { dataState: DataState.LOADED, appData: this.dataSubject.value };
+          return {dataState: DataState.LOADED, appData: this.dataSubject.value};
         }),
-        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+        startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
           this.isLoadingubject.next(false);
-          return of({ dataState: DataState.LOADED, appData: this.dataSubject.value, error })
+          return of({dataState: DataState.LOADED, appData: this.dataSubject.value, error})
         })
       )
+  }
+
+  updatePicture(image: File): void {
+    if (image) {
+      this.isLoadingubject.next(true);
+      this.profileState$ = this.userService.updateImage$(this.getFormData(image))
+        .pipe(
+          map(response => {
+            console.log(response);
+            this.dataSubject.next({...response,
+              data: {...response.data,
+              user: {...response.data.user, imageUrl: `${response.data.user.imageUrl}?time=${new Date().getTime()}`}} });
+            this.isLoadingubject.next(false);
+            return {dataState: DataState.LOADED, appData: this.dataSubject.value};
+          }),
+          startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
+          catchError((error: string) => {
+            this.isLoadingubject.next(false);
+            return of({dataState: DataState.LOADED, appData: this.dataSubject.value, error})
+          })
+        )
+    }
+  }
+
+  private getFormData(image: File): FormData {
+    const formData = new FormData();
+    formData.append('image', image);
+    return formData;
   }
 
 }
