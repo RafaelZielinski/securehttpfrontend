@@ -5,6 +5,7 @@ import {DataState} from "../../enum/datastate.enum";
 import {CustomHttpResponse, Profile} from "../../interface/appstates";
 import {State} from "../../interface/state";
 import {UserService} from "../../service/user.service";
+import { EventType } from 'src/app/enum/event-type.enum';
 
 @Component({
   selector: 'app-profile',
@@ -17,6 +18,7 @@ export class ProfileComponent implements OnInit {
   private isLoadingubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingubject.asObservable();
   readonly DataState = DataState;
+  readonly EventType = EventType;
 
   constructor(private userService: UserService) {
   }
