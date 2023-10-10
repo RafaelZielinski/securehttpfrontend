@@ -5,6 +5,7 @@ import {DataState} from "../../enum/datastate.enum";
 import {CustomHttpResponse, Profile} from "../../interface/appstates";
 import {State} from "../../interface/state";
 import {UserService} from "../../service/user.service";
+import { EventType } from 'src/app/enum/event-type.enum';
 
 @Component({
   selector: 'app-profile',
@@ -16,7 +17,10 @@ export class ProfileComponent implements OnInit {
   private dataSubject = new BehaviorSubject<CustomHttpResponse<Profile>>(null);
   private isLoadingubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingubject.asObservable();
+  private showLogsSubject = new BehaviorSubject<boolean>(false);
+  showLogs$ = this.showLogsSubject.asObservable();
   readonly DataState = DataState;
+  readonly EventType = EventType;
 
   constructor(private userService: UserService) {
   }
@@ -61,6 +65,7 @@ export class ProfileComponent implements OnInit {
         .pipe(
           map(response => {
             console.log(response);
+            this.dataSubject.next({...response, data: response.data});
             passwordForm.reset();
             this.isLoadingubject.next(false);
             return {dataState: DataState.LOADED, appData: this.dataSubject.value};
@@ -155,6 +160,10 @@ export class ProfileComponent implements OnInit {
           })
         )
     }
+  }
+
+  toggleLogs(): void {
+    this.showLogsSubject.next(!this.showLogsSubject.value);
   }
 
   private getFormData(image: File): FormData {
