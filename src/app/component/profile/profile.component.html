@@ -280,7 +280,8 @@
                     </div>
                     <div class="col-auto">
                       <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="activityLog">
+                        <input type="checkbox" (change)="toggleLogs()" [disabled]="isLoading$ | async"
+                        [checked]="(showLogs$ | async)" class="custom-control-input" id="activityLog">
                         <span class="custom-control-label"></span>
                       </div>
                     </div>
@@ -290,7 +291,7 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <div *ngIf="(showLogs$ | async)" class="row">
           <div class="col-xl-12 mt-4">
             <div class="card" style="border-radius: 8px;">
               <div class="card-body">
@@ -310,7 +311,8 @@
                   <tbody>
                     <tr *ngFor="let event of state?.appData?.data?.events">
                       <td>{{event.device}}</td>
-                      <td>{{event.ipAddress}}</td>
+                      <td>{{event.ipAddress}}
+                      </td>
                       <td>{{event.createdAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
                       <td>
                         <span class="badge pill" [ngClass]="[
