@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
           this.phoneSubject.next(response.data.user.phone);
           this.emailSubject.next(response.data.user.email);
           return {
-            DataState: DataState.LOADED, isUsingMfa: true, loginSucess: false,
+            DataState: DataState.LOADED, isUsingMfa: true, loginSucess: true,
             phone: response.data.user.phone.substring(response.data.user.phone.length - 4)
           }
         } else {
