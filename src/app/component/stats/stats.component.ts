@@ -1,4 +1,5 @@
 import {Component, Input} from '@angular/core';
+import { Stats } from 'src/app/interface/stats';
 
 @Component({
   selector: 'app-stats',
@@ -6,5 +7,5 @@ import {Component, Input} from '@angular/core';
   styleUrls: ['./stats.component.css']
 })
 export class StatsComponent {
-  // @Input() stats: Stats;
+  @Input() stats: Stats;
 }
