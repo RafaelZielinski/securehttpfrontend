@@ -18,6 +18,8 @@ import { CustomerComponent } from './component/customer/customer.component';
 import { CustomersComponent } from './component/customers/customers.component';
 import { NewCustomerComponent } from './component/new-customer/new-customer.component';
 import { InvoicesComponent } from './component/invoices/invoices.component';
+import { NewInvoiceComponent } from './component/new-invoice/new-invoice.component';
+import { InvoiceComponent } from './component/invoice/invoice.component';
 
 
 @NgModule({
@@ -34,8 +36,10 @@ import { InvoicesComponent } from './component/invoices/invoices.component';
     StatsComponent,
     CustomersComponent,
     NewCustomerComponent,
-    InvoicesComponent
-  ],
+    InvoicesComponent,
+    NewInvoiceComponent,
+    InvoiceComponent
+    ],
   imports: [
     BrowserModule,
     AppRoutingModule,
