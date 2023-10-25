@@ -18,6 +18,14 @@ export class CustomerService {
   constructor(private http: HttpClient,) {
   }
 
+  searchCustomers$ = (name: string = '', page: number = 0) => <Observable<CustomHttpResponse<Page & User>>>
+    this.http.get<CustomHttpResponse<Page & User & Stats>>
+      (`${this.server}/customer/search?name=${name}&page=${page}`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
   customers$ = (page: number = 0) => <Observable<CustomHttpResponse<Page & User & Stats>>>
     this.http.get<CustomHttpResponse<Page & User & Stats>>
       (`${this.server}/customer/list?page=${page}`)
