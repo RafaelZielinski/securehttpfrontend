@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable, catchError, tap, throwError, pipe } from 'rxjs';
-import { CustomHttpResponse, Page, Profile } from '../interface/appstates';
+import { CustomHttpResponse, CustomerState, Page, Profile } from '../interface/appstates';
 import { User } from "../interface/user";
 import { Key } from "../enum/key.enum";
 import { Stats } from '../interface/stats';
@@ -17,6 +17,23 @@ export class CustomerService {
 
   constructor(private http: HttpClient,) {
   }
+
+  update$ = (customer: Customer) => <Observable<CustomHttpResponse<CustomerState>>>
+    this.http.put<CustomHttpResponse<CustomerState>>
+      (`${this.server}/customer/update`, customer)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  customer$ = (customerId: number) => <Observable<CustomHttpResponse<CustomerState>>>
+    this.http.get<CustomHttpResponse<CustomerState>>
+      (`${this.server}/customer/get/${customerId}`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
 
   searchCustomers$ = (name: string = '', page: number = 0) => <Observable<CustomHttpResponse<Page & User>>>
     this.http.get<CustomHttpResponse<Page & User & Stats>>

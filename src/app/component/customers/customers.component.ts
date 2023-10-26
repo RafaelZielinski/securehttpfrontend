@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, map, of, startWith } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
 import { EventType } from 'src/app/enum/event-type.enum';
@@ -28,7 +29,7 @@ export class CustomersComponent {
   readonly DataState = DataState;
   readonly EventType = EventType;
 
-  constructor(private userService: UserService, private customerService: CustomerService) {
+  constructor(private router: Router, private userService: UserService, private customerService: CustomerService) {
   }
 
   ngOnInit(): void {
@@ -82,7 +83,7 @@ export class CustomersComponent {
     this.goToPage(direction === 'forward' ? this.currentPageSubject.value + 1 : this.currentPageSubject.value - 1, name);
     }  
 
-
-  selectCustomer(customer: Customer): void {}
-
+  selectCustomer(customer: Customer): void {
+    this.router.navigate([`/customers/${customer.id}`]);
+  }
 }
