@@ -53,6 +53,7 @@ export class CustomerComponent {
       .pipe(
         map(response => {
           console.log(response);
+          // this.dataSubject.next(response);
           this.dataSubject.next({ ...response, 
             data: { ...response.data, 
               customer: { ...response.data.customer, 
