@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { BehaviorSubject, Observable, catchError, map, of, startWith } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
 import { CustomHttpResponse, Page } from 'src/app/interface/appstates';
+import { Customer } from 'src/app/interface/customer';
 import { State } from 'src/app/interface/state';
 import { User } from 'src/app/interface/user';
 import { CustomerService } from 'src/app/service/customer.service';
@@ -13,8 +14,8 @@ import { CustomerService } from 'src/app/service/customer.service';
   styleUrls: ['./new-customer.component.css']
 })
 export class NewCustomerComponent implements OnInit {
-  newCustomerState$: Observable<State<CustomHttpResponse<Page & User>>>;
-  private dataSubject = new BehaviorSubject<CustomHttpResponse<Page & User>>(null);
+  newCustomerState$: Observable<State<CustomHttpResponse<Page<Customer> & User>>>;
+  private dataSubject = new BehaviorSubject<CustomHttpResponse<Page<Customer> & User>>(null);
   private isLoadingubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingubject.asObservable();
   readonly DataState = DataState;

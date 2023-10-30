@@ -17,8 +17,8 @@ import { UserService } from 'src/app/service/user.service';
 })
 export class HomeComponent {
   
-  homeState$: Observable<State<CustomHttpResponse<Page & User>>>;
-  private dataSubject = new BehaviorSubject<CustomHttpResponse<Page & User>>(null);
+  homeState$: Observable<State<CustomHttpResponse<Page<Customer> & User>>>;
+  private dataSubject = new BehaviorSubject<CustomHttpResponse<Page<Customer> & User>>(null);
   private isLoadingubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingubject.asObservable();
   private currentPageSubject = new BehaviorSubject<number>(0);

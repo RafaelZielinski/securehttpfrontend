@@ -36,16 +36,23 @@ export class CustomerService {
       );
 
 
-  searchCustomers$ = (name: string = '', page: number = 0) => <Observable<CustomHttpResponse<Page & User>>>
-    this.http.get<CustomHttpResponse<Page & User & Stats>>
+  searchCustomers$ = (name: string = '', page: number = 0) => <Observable<CustomHttpResponse<Page<Customer> & User>>>
+    this.http.get<CustomHttpResponse<Page<Customer> & User & Stats>>
       (`${this.server}/customer/search?name=${name}&page=${page}`)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
       );
 
-  customers$ = (page: number = 0) => <Observable<CustomHttpResponse<Page & User & Stats>>>
-    this.http.get<CustomHttpResponse<Page & User & Stats>>
+      invoices$ = (page: number = 0) => <Observable<CustomHttpResponse<Page<Invoice> & User>>>
+    this.http.get<CustomHttpResponse<Page<Invoice> & User & Stats>>
+      (`${this.server}/customer/invoice/list?page=${page}`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+  customers$ = (page: number = 0) => <Observable<CustomHttpResponse<Page<Customer> & User & Stats>>>
+    this.http.get<CustomHttpResponse<Page<Customer> & User & Stats>>
       (`${this.server}/customer/list?page=${page}`)
       .pipe(
         tap(console.log),
