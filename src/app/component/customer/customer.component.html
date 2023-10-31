@@ -146,8 +146,8 @@
                                    [ngClass]="[
                                      invoice.status === 'ACTIVE' ? ' bg-success' : '',
                                      invoice.status === 'PENDING' ? ' bg-primary' : '',
-                                     invoice.status === 'BANNED' ? ' bg-danger' : '',
-                                     invoice.status === 'INACTIVE' ? ' bg-info' : ''
+                                     invoice.status === 'OVERDUE' ? ' bg-warning' : '',
+                                     invoice.status === 'CANCELED' ? ' bg-info' : ''
                                      ]">
                                       {{ invoice.status }}
                                    </span>
