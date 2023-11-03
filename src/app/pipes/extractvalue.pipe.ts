@@ -10,6 +10,7 @@ export class ExtractArrayValue implements PipeTransform {
       for(let i = 0; i < value; i++) {
         numberArray.push(i);
       }
+      return numberArray;
     }
 
     if (args === 'invoices') {
