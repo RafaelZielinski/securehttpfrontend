@@ -27,7 +27,7 @@
                             <div class="col-auto">
                                 <button type="submit" class="btn btn-primary mb-3">Search Customers</button>
                             </div>
-                        </form>>
+                        </form>
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -55,7 +55,6 @@
                         customer.status === 'PENDING' ? 'bg-primary' : '',
                         customer.status === 'BANNED' ? 'bg-danger' : '',
                         customer.status === 'INACTIVE' ? 'bg-info' : '',
-
                         ]">
                                             {{customer.status}}
                                         </span>
@@ -79,7 +78,7 @@
                                     class="page-item pointer">
                                     <a [ngClass]="i == (currentPage$ | async) ? ' active': ' '" class="page-link"
                                         (click)="goToPage(i , searchForm.value.name)">
-                                        {{ i + 1}}</a>
+                                        {{pageNumber}}</a>
                                 </li>
                                 <li [ngClass]="(state?.appData?.data?.page.totalPages - 1) == (currentPage$ | async) ? 'disabled' : ''"
                                     class="page-item pointer">

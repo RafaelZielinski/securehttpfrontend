@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, tap, throwError, pipe } from 'rxjs';
 import { CustomHttpResponse, CustomerState, Page, Profile } from '../interface/appstates';
@@ -88,6 +88,12 @@ export class CustomerService {
         catchError(this.handleError)
       );
 
+  downloadReport$ = () => <Observable<HttpEvent<Blob>>>
+    this.http.get(`${this.server}/customer/download/report`, { reportProgress: true, observe: 'events', responseType: 'blob' })
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
   private handleError(error: HttpErrorResponse): Observable<never> {
     console.log(error);
     let errorMessage: string;
