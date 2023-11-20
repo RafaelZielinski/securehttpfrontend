@@ -22,6 +22,7 @@ import { NewInvoiceComponent } from './component/new-invoice/new-invoice.compone
 import { InvoiceComponent } from './component/invoice/invoice.component';
 import { ExtractArrayValue } from './pipes/extractvalue.pipe';
 import { CasheInterceptor } from './interceptor/cache.interceptor';
+import { TestsComponent } from './component/tests/tests.component';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { CasheInterceptor } from './interceptor/cache.interceptor';
     InvoicesComponent,
     NewInvoiceComponent,
     InvoiceComponent,
-    ExtractArrayValue
+    ExtractArrayValue,
+    TestsComponent
     ],
   imports: [
     BrowserModule,

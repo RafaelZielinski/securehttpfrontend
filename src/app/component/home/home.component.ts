@@ -1,3 +1,4 @@
+import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, map, of, startWith } from 'rxjs';
@@ -9,6 +10,7 @@ import { State } from 'src/app/interface/state';
 import { User } from 'src/app/interface/user';
 import { CustomerService } from 'src/app/service/customer.service';
 import { UserService } from 'src/app/service/user.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-home',
@@ -25,6 +27,8 @@ export class HomeComponent {
   currentPage$ = this.currentPageSubject.asObservable();
   private showLogsSubject = new BehaviorSubject<boolean>(false);
   showLogs$ = this.showLogsSubject.asObservable();
+  private fileStatusSubject = new BehaviorSubject<{status: string, type: string, percent: Number}>(undefined);
+  fileStatus$ = this.fileStatusSubject.asObservable();
   readonly DataState = DataState;
   readonly EventType = EventType;
 
@@ -45,29 +49,65 @@ export class HomeComponent {
         })
       )
   }
-    goToPage(pageNumber?: number): void {
-      this.homeState$ = this.customerService.customers$(pageNumber)
+  goToPage(pageNumber?: number): void {
+    this.homeState$ = this.customerService.customers$(pageNumber)
       .pipe(
         map(response => {
           console.log(response);
           this.dataSubject.next(response);
           this.currentPageSubject.next(pageNumber);
-          return {dataState: DataState.LOADED, appData: response};
+          return { dataState: DataState.LOADED, appData: response };
         }),
-        startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
+        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
         catchError((error: string) => {
-          return of({dataState: DataState.ERROR, error , appData: this.dataSubject.value})
+          return of({ dataState: DataState.ERROR, error, appData: this.dataSubject.value })
         })
       )
-    
-      }
-    goToNextOrPreviosPage(direction?: string): void {
+  }
+
+  goToNextOrPreviosPage(direction?: string): void {
     this.goToPage(direction === 'forward' ? this.currentPageSubject.value + 1 : this.currentPageSubject.value - 1);
-    }  
+  }  
 
 
   selectCustomer(customer: Customer): void {
     this.router.navigate([`/customers/${customer.id}`]);
+  }
+
+  report() : void {
+    this.homeState$ = this.customerService.downloadReport$()
+    .pipe(
+      map(response => {
+        console.log(response);
+        this.reportProgress(response);
+        return {dataState: DataState.LOADED, appData: this.dataSubject.value};
+      }),
+      startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
+      catchError((error: string) => {
+        return of({dataState: DataState.ERROR, error , appData: this.dataSubject.value})
+      })
+    )
+  }
+  private reportProgress(httpEvent: HttpEvent<string[] | Blob>) {
+    switch (httpEvent.type) {
+      case HttpEventType.DownloadProgress || HttpEventType.UploadProgress:
+        this.fileStatusSubject.next({ status: 'progress', type: 'Downloading...', percent: Math.round(100 * httpEvent.loaded / httpEvent.total) });
+        break;
+
+      case HttpEventType.ResponseHeader || HttpEventType.UploadProgress:
+        console.log('Got response Headers', httpEvent);
+        break;
+
+      case HttpEventType.Response:
+        saveAs(new File([<Blob>httpEvent.body], httpEvent.headers.get('File-Name'),
+          { type: `${httpEvent.headers.get('Content-Type')}; charseet=utf-8` }))
+        this.fileStatusSubject.next(undefined);
+
+        break;
+
+      default:
+        console.log(httpEvent)
+    }
   }
 
 

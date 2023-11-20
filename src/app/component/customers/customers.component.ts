@@ -79,6 +79,7 @@ export class CustomersComponent {
         })
       )
       }
+      
     goToNextOrPreviosPage(direction?: string, name?: string): void {
     this.goToPage(direction === 'forward' ? this.currentPageSubject.value + 1 : this.currentPageSubject.value - 1, name);
     }  

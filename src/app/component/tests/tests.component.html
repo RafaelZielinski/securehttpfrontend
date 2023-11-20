@@ -1,0 +1,13 @@
+<div class="justify-center-center">
+    <ul class="pagination">
+        <li>
+            <button (click)="previousWindow()" [disabled]="startPage <= 1">Previous</button>
+        </li>
+        <li *ngFor="let page of displayPageNumbers()">
+            <button  (click)="goToPage(page)">{{ page }}</button>
+        </li>
+        <li>
+            <button (click)="nextWindow()" [disabled]="startPage + pageLimit - 1 >= totalPages">Next</button>
+        </li>
+    </ul>
+</div>
