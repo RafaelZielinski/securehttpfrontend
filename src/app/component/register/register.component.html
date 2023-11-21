@@ -1,40 +1,81 @@
-<img src="https://plus.unsplash.com/premium_photo-1673624399228-f2a3d8ec5e19?auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxMnx8fGVufDB8fHx8fA%3D%3D&w=500"
-    alt="error" class="user-avatar-sm" />
+<section *ngIf="(registerState$ | async) as state" [ngSwitch]="state.dataState">
+    <div *ngIf="!state.registerSuccess" class="container">
+      <div class="row justify-content-center my-5">
+        <div class="col-md-6" style="margin-top: 50px;">
+          <div class="card">
+            <div class="card-body">
+              <div class="text-center">
+                <h2><i style="margin-right: 5px;" class="bi bi-safe"></i>SecureCapita</h2>
+                <h5 class="card-title mt-4 mb-5">Create an Account</h5>
+              </div>
+              <div *ngIf="state.dataState === DataState.ERROR" class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show" role="alert">
+                {{ state.error }}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              <form #registerForm="ngForm" (ngSubmit)="register(registerForm)">
+                <div class="form-outline mb-4">
+                  <label class="form-label" for="email">First Name</label>
+                  <input type="text" [disabled]="state.dataState === DataState.LOADING" ngModel name="firstName" class="form-control" required minlength="2">
+                </div>
+                <div class="form-outline mb-4">
+                  <label for="lastName" class="form-label">Last name</label>
+                  <input type="text" [disabled]="state.dataState === DataState.LOADING" ngModel name="lastName" class="form-control" required minlength="2">
+                </div>
+                <div class="form-outline mb-4">
+                  <label for="password" class="form-label">Email Address</label>
+                  <input type="email" [disabled]="state.dataState === DataState.LOADING" ngModel name="email" class="form-control" required minlength="3">
+                </div>
+                <div class="form-outline mb-4">
+                  <label for="password" class="form-label">Password</label>
+                  <input type="password" [disabled]="state.dataState === DataState.LOADING" ngModel name="password" class="form-control" required minlength="4">
+                </div>
+                <div class="d-flex justify-content-center mb-4">
+                  <button [disabled]="state.dataState === DataState.LOADING || registerForm.invalid || registerForm.pristine" type="submit" class="btn btn-primary">
+                    <span *ngIf="state.dataState === DataState.LOADING" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="margin-right: 5px;"></span>
+                    <span *ngIf="state.dataState === DataState.LOADING">Saving...</span>
+                    <span *ngIf="!(state.dataState === DataState.LOADING)">Create Account</span>
+                  </button>
+                </div>
+              </form>
+              <div class="row mb-4">
+                <div class="col d-flex justify-content-center">
+                  <a [ngStyle]="{'pointer-events' : state.dataState === DataState.LOADING ? 'none' : 'auto'}" [routerLink]="['/login']">Account Login</a>
+                </div>
+                <div class="col">
+                  <a [ngStyle]="{'pointer-events' : state.dataState === DataState.LOADING ? 'none' : 'auto'}" [routerLink]="['/resetpassword']">Forgot password?</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th class="text-center" scope="col">ID</th>
-            <th scope="col">Photo</th>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Phone</th>
-            <th scope="col">Status</th>
-            <th scope="col">Type</th>
-            <th scope="col">Action</th>
-        </tr>
-    </thead>
-    <tbody class="table-body">
-        <tr class="cell-1">
-            <th class="text-center">cus</th>
-            <td>
-                <img src="https://plus.unsplash.com/premium_photo-1673624399228-f2a3d8ec5e19?auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxMnx8fGVufDB8fHx8fA%3D%3D&w=500"
-                    height="42 px" width="42 px" class="rounded-circle" />
-            </td>
-            <td></td>
-            <td>email</td>
-            <td>phone</td>
-            <td>
-                <span class="badge">
-                    status
-                </span>
-            </td>
-            <td>
-                type
-            </td>
-            <td>
-                <button type="button" class=" btn btn-info">View</button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+    <!-- Success screen -->
+    <div *ngIf="state.registerSuccess" class="container">
+      <div class="row justify-content-center my-5">
+        <div class="col-md-6" style="margin-top: 50px;">
+          <div class="card">
+            <div class="card-body">
+              <div class="text-center">
+                <h2><i style="margin-right: 5px;" class="bi bi-safe"></i>SecureCapita</h2>
+                <h5 class="card-title mt-4 mb-4">{{ state.message }}</h5>
+                <i class="bi bi-check-circle-fill" style="font-size: 80px;color: green;"></i>
+                <p class="mt-2" style="font-size: 20px;">Please access your email and confirm your account.</p>
+              </div>
+              <div class="row mb-4">
+                <div class="col d-flex justify-content-center">
+                  <a [routerLink]="['/login']">Account Login</a>
+                </div>
+                <div class="col">
+                  <a (click)="createAccountForm()" style="color: #0D6EFD; text-decoration: underline; cursor: pointer;">
+                    Create another account
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
