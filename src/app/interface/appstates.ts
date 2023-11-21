@@ -44,3 +44,18 @@ export interface CustomerState {
     customer: T;
 }
 
+export interface RegisterState {
+    dataState: DataState;
+    registerSuccess?: boolean;
+    error?: string;
+    message?: string;
+}
+
+
+export interface ResetPasswordState {
+    dataState: DataState;
+    registerSuccess?: boolean;
+    error?: string;
+    message?: string;
+}
+
