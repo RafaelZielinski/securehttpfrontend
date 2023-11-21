@@ -51,3 +51,11 @@ export interface RegisterState {
     message?: string;
 }
 
+
+export interface ResetPasswordState {
+    dataState: DataState;
+    registerSuccess?: boolean;
+    error?: string;
+    message?: string;
+}
+
