@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable, catchError, tap, throwError, pipe } from 'rxjs';
-import { CustomHttpResponse, Profile } from '../interface/appstates';
+import { CustomHttpResponse, Profile, RegisterState } from '../interface/appstates';
 import { User } from "../interface/user";
 import { Key } from "../enum/key.enum";
 
@@ -20,6 +20,14 @@ export class UserService {
   login$ = (email: string, password: string) => <Observable<CustomHttpResponse<Profile>>>
     this.http.post<CustomHttpResponse<Profile>>
       (`${this.server}/user/login`, { email, password })
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+      save$ = (user: User) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.post<CustomHttpResponse<Profile>>
+      (`${this.server}/user/register`, user)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
