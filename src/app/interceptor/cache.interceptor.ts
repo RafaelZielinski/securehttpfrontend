@@ -7,8 +7,6 @@ import {
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, tap } from 'rxjs';
-import { CustomHttpResponse, Profile } from '../interface/appstates';
-import { UserService } from '../service/user.service';
 import { HttpCacheService } from '../service/http.cache.service';
 
 
@@ -19,7 +17,9 @@ export class CasheInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> | Observable<HttpResponse<unknown>>{
     if(request.url.includes('verify') || request.url.includes('login') || request.url.includes('register')
-            || request.url.includes('refresh') || request.url.includes('resetpassword')) {
+            || request.url.includes('refresh') || request.url.includes('resetpassword')
+            || request.url.includes('verify')
+            || request.url.includes('new/password')) {
           return next.handle(request);
       }
 
