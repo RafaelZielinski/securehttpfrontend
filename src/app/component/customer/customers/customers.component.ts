@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, map, of, startWith } from 'rxjs';
@@ -15,6 +15,8 @@ import { UserService } from 'src/app/service/user.service';
   selector: 'app-customers',
   templateUrl: './customers.component.html',
   styleUrls: ['./customers.component.css']
+  ,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomersComponent {
 

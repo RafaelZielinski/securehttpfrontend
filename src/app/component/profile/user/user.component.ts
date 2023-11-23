@@ -1,18 +1,20 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {NgForm} from "@angular/forms";
 import {BehaviorSubject, catchError, map, Observable, of, startWith} from "rxjs";
-import {DataState} from "../../enum/datastate.enum";
-import {CustomHttpResponse, Profile} from "../../interface/appstates";
-import {State} from "../../interface/state";
-import {UserService} from "../../service/user.service";
+import {DataState} from "../../../enum/datastate.enum";
+import {CustomHttpResponse, Profile} from "../../../interface/appstates";
+import {State} from "../../../interface/state";
+import {UserService} from "../../../service/user.service";
 import { EventType } from 'src/app/enum/event-type.enum';
 
 @Component({
   selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+
 })
-export class ProfileComponent implements OnInit {
+export class UserComponent implements OnInit {
   profileState$: Observable<State<CustomHttpResponse<Profile>>>;
   private dataSubject = new BehaviorSubject<CustomHttpResponse<Profile>>(null);
   private isLoadingubject = new BehaviorSubject<boolean>(false);

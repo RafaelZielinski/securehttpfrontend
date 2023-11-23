@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, map, of, startWith, switchMap } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
@@ -14,10 +14,12 @@ import { jsPDF as pdf } from 'jspdf';
 
 @Component({
   selector: 'app-invoice',
-  templateUrl: './invoice.component.html',
-  styleUrls: ['./invoice.component.css']
+  templateUrl: './invoice-detail.component.html',
+  styleUrls: ['./invoice-detail.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+
 })
-export class InvoiceComponent {
+export class InvoiceDetailComponent {
   invoiceState$: Observable<State<CustomHttpResponse<Customer & Invoice & User>>>;
   private dataSubject = new BehaviorSubject<CustomHttpResponse<Customer & Invoice & User>>(null);
   private isLoadingsubject = new BehaviorSubject<boolean>(false);

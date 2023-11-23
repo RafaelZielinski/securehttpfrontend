@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-tests',
   templateUrl: './tests.component.html',
-  styleUrls: ['./tests.component.css']
+  styleUrls: ['./tests.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+
 })
 export class TestsComponent {
   totalItems: number = 50; // Total number of items to paginate

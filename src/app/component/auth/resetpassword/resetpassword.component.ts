@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
@@ -9,6 +9,8 @@ import { UserService } from 'src/app/service/user.service';
   selector: 'app-resetpassword',
   templateUrl: './resetpassword.component.html',
   styleUrls: ['./resetpassword.component.css']
+  ,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResetpasswordComponent {
   resetPasswordState$: Observable<ResetPasswordState> = of({ dataState: DataState.LOADED });

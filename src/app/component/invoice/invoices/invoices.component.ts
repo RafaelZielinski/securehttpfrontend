@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, map, of, startWith, switchMap } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
@@ -13,7 +13,9 @@ import { UserService } from 'src/app/service/user.service';
 @Component({
   selector: 'app-invoices',
   templateUrl: './invoices.component.html',
-  styleUrls: ['./invoices.component.css']
+  styleUrls: ['./invoices.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+
 })
 export class InvoicesComponent {
 

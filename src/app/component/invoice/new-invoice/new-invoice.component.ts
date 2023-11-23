@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { BehaviorSubject, Observable, catchError, map, of, startWith } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
@@ -7,15 +7,16 @@ import { Customer } from 'src/app/interface/customer';
 import { State } from 'src/app/interface/state';
 import { User } from 'src/app/interface/user';
 import { CustomerService } from 'src/app/service/customer.service';
-
 @Component({
-  selector: 'app-new-customer',
-  templateUrl: './new-customer.component.html',
-  styleUrls: ['./new-customer.component.css']
+  selector: 'app-new-invoice',
+  templateUrl: './new-invoice.component.html',
+  styleUrls: ['./new-invoice.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+
 })
-export class NewCustomerComponent implements OnInit {
-  newCustomerState$: Observable<State<CustomHttpResponse<Page<Customer> & User>>>;
-  private dataSubject = new BehaviorSubject<CustomHttpResponse<Page<Customer> & User>>(null);
+export class NewInvoiceComponent {
+  newInvoiceState$: Observable<State<CustomHttpResponse<Customer[] & User>>>;
+  private dataSubject = new BehaviorSubject<CustomHttpResponse<Customer[] & User>>(null);
   private isLoadingubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingubject.asObservable();
   readonly DataState = DataState;
@@ -23,7 +24,7 @@ export class NewCustomerComponent implements OnInit {
   constructor(private customerService: CustomerService) { }
 
   ngOnInit(): void {
-    this.newCustomerState$ = this.customerService.customers$()
+    this.newInvoiceState$ = this.customerService.newInvoice$()
       .pipe(
         map(response => {
           console.log(response);
@@ -37,14 +38,16 @@ export class NewCustomerComponent implements OnInit {
       )
   }
 
-  createCustomer(newCustomerForm: NgForm): void {
+  newInvoice(newInvoiceForm: NgForm): void {
+    this.dataSubject.next({...this.dataSubject.value, message: null})
     this.isLoadingubject.next(true);
-    this.newCustomerState$ = this.customerService.newCustomer$(newCustomerForm.value)
+    this.newInvoiceState$ = this.customerService.createInvoice$(newInvoiceForm.value.customerId, newInvoiceForm.value)
       .pipe(
         map(response => {
           console.log(response);
-          newCustomerForm.reset({ type: "INDIVIDUAL", status: 'ACTIVE'})
+          newInvoiceForm.reset({status: 'PENDING'})
           this.isLoadingubject.next(false);
+          this.dataSubject.next(response)
           return { dataState: DataState.LOADED, appData: this.dataSubject.value };
         }),
         startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
@@ -55,4 +58,3 @@ export class NewCustomerComponent implements OnInit {
       )
   }
 }
-
