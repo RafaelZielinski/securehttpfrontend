@@ -11,6 +11,7 @@ import { User } from 'src/app/interface/user';
 import { CustomerService } from 'src/app/service/customer.service';
 import { UserService } from 'src/app/service/user.service';
 import { saveAs } from 'file-saver';
+import { NotificationService } from 'src/app/service/notification.service';
 
 @Component({
   selector: 'app-home',
@@ -34,19 +35,21 @@ export class HomeComponent {
   readonly DataState = DataState;
   readonly EventType = EventType;
 
-  constructor(private router: Router, private userService: UserService, private customerService: CustomerService) {
+  constructor(private router: Router, private userService: UserService, private customerService: CustomerService, private noficationService: NotificationService) {
   }
 
   ngOnInit(): void {
     this.homeState$ = this.customerService.customers$()
       .pipe(
         map(response => {
+          this.noficationService.onDefault(response.message);
           console.log(response);
           this.dataSubject.next(response);
           return {dataState: DataState.LOADED, appData: response};
         }),
         startWith({dataState: DataState.LOADING}),
         catchError((error: string) => {
+          this.noficationService.onError(error);
           return of({dataState: DataState.ERROR, error})
         })
       )
@@ -55,6 +58,7 @@ export class HomeComponent {
     this.homeState$ = this.customerService.customers$(pageNumber)
       .pipe(
         map(response => {
+          this.noficationService.onDefault(response.message);
           console.log(response);
           this.dataSubject.next(response);
           this.currentPageSubject.next(pageNumber);
@@ -62,6 +66,7 @@ export class HomeComponent {
         }),
         startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
         catchError((error: string) => {
+          this.noficationService.onError(error);
           return of({ dataState: DataState.ERROR, error, appData: this.dataSubject.value })
         })
       )
@@ -86,6 +91,7 @@ export class HomeComponent {
       }),
       startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
       catchError((error: string) => {
+        this.noficationService.onError(error);
         return of({dataState: DataState.ERROR, error , appData: this.dataSubject.value})
       })
     )
@@ -101,6 +107,7 @@ export class HomeComponent {
         break;
 
       case HttpEventType.Response:
+        this.noficationService.onDefault('Downloading file...');
         saveAs(new File([<Blob>httpEvent.body], httpEvent.headers.get('File-Name'),
           { type: `${httpEvent.headers.get('Content-Type')}; charseet=utf-8` }))
         this.fileStatusSubject.next(undefined);

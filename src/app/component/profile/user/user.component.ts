@@ -6,6 +6,7 @@ import {CustomHttpResponse, Profile} from "../../../interface/appstates";
 import {State} from "../../../interface/state";
 import {UserService} from "../../../service/user.service";
 import { EventType } from 'src/app/enum/event-type.enum';
+import { NotificationService } from 'src/app/service/notification.service';
 
 @Component({
   selector: 'app-profile',
@@ -24,19 +25,21 @@ export class UserComponent implements OnInit {
   readonly DataState = DataState;
   readonly EventType = EventType;
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private noficationService: NotificationService) {
   }
 
   ngOnInit(): void {
     this.profileState$ = this.userService.profile$()
       .pipe(
         map(response => {
+          this.noficationService.onDefault(response.message);
           console.log(response);
           this.dataSubject.next(response);
           return {dataState: DataState.LOADED, appData: response};
         }),
         startWith({dataState: DataState.LOADING}),
         catchError((error: string) => {
+          this.noficationService.onError(error);
           return of({dataState: DataState.ERROR, appData: this.dataSubject.value, error})
         })
       )
@@ -47,6 +50,7 @@ export class UserComponent implements OnInit {
     this.profileState$ = this.userService.update$(profileForm.value)
       .pipe(
         map(response => {
+          this.noficationService.onDefault(response.message);
           console.log(response);
           this.dataSubject.next({...response, data: response.data});
           this.isLoadingubject.next(false);
@@ -54,6 +58,7 @@ export class UserComponent implements OnInit {
         }),
         startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
+          this.noficationService.onError(error);
           this.isLoadingubject.next(false);
           return of({dataState: DataState.LOADED, appData: this.dataSubject.value, error})
         })
@@ -66,6 +71,7 @@ export class UserComponent implements OnInit {
       this.profileState$ = this.userService.updatePassword$(passwordForm.value)
         .pipe(
           map(response => {
+            this.noficationService.onDefault(response.message);
             console.log(response);
             this.dataSubject.next({...response, data: response.data});
             passwordForm.reset();
@@ -74,6 +80,7 @@ export class UserComponent implements OnInit {
           }),
           startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
           catchError((error: string) => {
+            this.noficationService.onError(error);
             passwordForm.reset();
             this.isLoadingubject.next(false);
             return of({dataState: DataState.ERROR, appData: this.dataSubject.value, error})
@@ -92,6 +99,7 @@ export class UserComponent implements OnInit {
     this.profileState$ = this.userService.updateRole$(roleForm.value.roleName)
       .pipe(
         map(response => {
+          this.noficationService.onDefault(response.message);
           console.log(response);
           this.dataSubject.next({...response, data: response.data});
           this.isLoadingubject.next(false);
@@ -99,6 +107,7 @@ export class UserComponent implements OnInit {
         }),
         startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
+          this.noficationService.onError(error);
           this.isLoadingubject.next(false);
           return of({dataState: DataState.LOADED, appData: this.dataSubject.value, error})
         })
@@ -110,6 +119,7 @@ export class UserComponent implements OnInit {
     this.profileState$ = this.userService.updateAccountSettings$(settingsForm.value)
       .pipe(
         map(response => {
+          this.noficationService.onDefault(response.message);
           console.log(response);
           this.dataSubject.next({...response, data: response.data});
           this.isLoadingubject.next(false);
@@ -117,6 +127,7 @@ export class UserComponent implements OnInit {
         }),
         startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
+          this.noficationService.onError(error);
           this.isLoadingubject.next(false);
           return of({dataState: DataState.LOADED, appData: this.dataSubject.value, error})
         })
@@ -129,6 +140,7 @@ export class UserComponent implements OnInit {
     this.profileState$ = this.userService.toggleMfa$()
       .pipe(
         map(response => {
+          this.noficationService.onDefault(response.message);
           console.log(response);
           this.dataSubject.next({...response, data: response.data});
           this.isLoadingubject.next(false);
@@ -136,6 +148,7 @@ export class UserComponent implements OnInit {
         }),
         startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
+          this.noficationService.onError(error);
           this.isLoadingubject.next(false);
           return of({dataState: DataState.LOADED, appData: this.dataSubject.value, error})
         })
@@ -148,6 +161,7 @@ export class UserComponent implements OnInit {
       this.profileState$ = this.userService.updateImage$(this.getFormData(image))
         .pipe(
           map(response => {
+            this.noficationService.onDefault(response.message);
             console.log(response);
             this.dataSubject.next({...response,
               data: {...response.data,
@@ -157,6 +171,7 @@ export class UserComponent implements OnInit {
           }),
           startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
           catchError((error: string) => {
+            this.noficationService.onError(error);
             this.isLoadingubject.next(false);
             return of({dataState: DataState.LOADED, appData: this.dataSubject.value, error})
           })

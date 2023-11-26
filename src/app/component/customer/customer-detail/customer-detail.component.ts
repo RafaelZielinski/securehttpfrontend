@@ -9,6 +9,7 @@ import { Customer } from 'src/app/interface/customer';
 import { State } from 'src/app/interface/state';
 import { User } from 'src/app/interface/user';
 import { CustomerService } from 'src/app/service/customer.service';
+import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
 @Component({
   selector: 'app-customer',
@@ -26,7 +27,7 @@ export class CustomerDetailComponent {
   readonly DataState = DataState;
   private readonly CUSTOMER_ID: string = 'id';
 
-  constructor(private activatedRoute: ActivatedRoute, private router: Router, private userService: UserService, private customerService: CustomerService) {
+  constructor(private activatedRoute: ActivatedRoute, private router: Router, private userService: UserService, private customerService: CustomerService, private noficationService: NotificationService) {
   }
 
   ngOnInit(): void {
@@ -35,12 +36,14 @@ export class CustomerDetailComponent {
         return this.customerService.customer$(+params.get(this.CUSTOMER_ID))
           .pipe(
             map(response => {
+              this.noficationService.onDefault(response.message);
               console.log(response);
               this.dataSubject.next(response);
               return { dataState: DataState.LOADED, appData: response };
             }),
             startWith({ dataState: DataState.LOADING }),
             catchError((error: string) => {
+              this.noficationService.onError(error);
               return of({ dataState: DataState.ERROR, error })
             })
           )
@@ -55,6 +58,7 @@ export class CustomerDetailComponent {
       .pipe(
         map(response => {
           console.log(response);
+          this.noficationService.onDefault(response.message);
           // this.dataSubject.next(response);
           this.dataSubject.next({ ...response, 
             data: { ...response.data, 
@@ -66,6 +70,7 @@ export class CustomerDetailComponent {
         }),
         startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
         catchError((error: string) => {
+          this.noficationService.onError(error);
           this.isLoadingsubject.next(false);
           return of({ dataState: DataState.ERROR, error })
         })

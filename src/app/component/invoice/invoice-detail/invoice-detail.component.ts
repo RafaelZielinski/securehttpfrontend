@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { jsPDF as pdf } from 'jspdf';
 import { BehaviorSubject, Observable, catchError, map, of, startWith, switchMap } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
-import { EventType } from 'src/app/enum/event-type.enum';
-import { CustomHttpResponse, CustomerState, Page, Profile } from 'src/app/interface/appstates';
+import { CustomHttpResponse } from 'src/app/interface/appstates';
 import { Customer } from 'src/app/interface/customer';
 import { Invoice } from 'src/app/interface/invoice';
 import { State } from 'src/app/interface/state';
 import { User } from 'src/app/interface/user';
 import { CustomerService } from 'src/app/service/customer.service';
+import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
-import { jsPDF as pdf } from 'jspdf';
 
 @Component({
   selector: 'app-invoice',
@@ -27,7 +27,7 @@ export class InvoiceDetailComponent {
   readonly DataState = DataState;
   private readonly INVOICE_ID: string = 'id';
 
-  constructor(private activatedRoute: ActivatedRoute, private router: Router, private userService: UserService, private customerService: CustomerService) {
+  constructor(private activatedRoute: ActivatedRoute, private router: Router, private userService: UserService, private customerService: CustomerService, private noficationService: NotificationService) {
   }
 
   ngOnInit(): void {
@@ -36,12 +36,14 @@ export class InvoiceDetailComponent {
         return this.customerService.invoice$(+params.get(this.INVOICE_ID))
           .pipe(
             map(response => {
+              this.noficationService.onDefault(response.message);
               console.log(response);
               this.dataSubject.next(response);
               return { dataState: DataState.LOADED, appData: response };
             }),
             startWith({ dataState: DataState.LOADING }),
             catchError((error: string) => {
+              this.noficationService.onError(error);
               return of({ dataState: DataState.ERROR, error })
             })
           )

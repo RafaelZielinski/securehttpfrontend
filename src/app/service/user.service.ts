@@ -6,9 +6,7 @@ import { AccountType, CustomHttpResponse, Profile, RegisterState } from '../inte
 import { User } from "../interface/user";
 import { Key } from "../enum/key.enum";
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class UserService {
 
   private readonly server: string = 'http://localhost:8095';

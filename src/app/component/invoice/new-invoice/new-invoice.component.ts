@@ -7,6 +7,7 @@ import { Customer } from 'src/app/interface/customer';
 import { State } from 'src/app/interface/state';
 import { User } from 'src/app/interface/user';
 import { CustomerService } from 'src/app/service/customer.service';
+import { NotificationService } from 'src/app/service/notification.service';
 @Component({
   selector: 'app-new-invoice',
   templateUrl: './new-invoice.component.html',
@@ -21,18 +22,20 @@ export class NewInvoiceComponent {
   isLoading$ = this.isLoadingubject.asObservable();
   readonly DataState = DataState;
 
-  constructor(private customerService: CustomerService) { }
+  constructor(private customerService: CustomerService, private noficationService: NotificationService) { }
 
   ngOnInit(): void {
     this.newInvoiceState$ = this.customerService.newInvoice$()
       .pipe(
         map(response => {
+          this.noficationService.onDefault(response.message);
           console.log(response);
           this.dataSubject.next(response);
           return { dataState: DataState.LOADED, appData: response };
         }),
         startWith({ dataState: DataState.LOADING }),
         catchError((error: string) => {
+          this.noficationService.onError(error);
           return of({ dataState: DataState.ERROR, error })
         })
       )
@@ -44,6 +47,7 @@ export class NewInvoiceComponent {
     this.newInvoiceState$ = this.customerService.createInvoice$(newInvoiceForm.value.customerId, newInvoiceForm.value)
       .pipe(
         map(response => {
+          this.noficationService.onDefault(response.message);
           console.log(response);
           newInvoiceForm.reset({status: 'PENDING'})
           this.isLoadingubject.next(false);
@@ -52,6 +56,7 @@ export class NewInvoiceComponent {
         }),
         startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
         catchError((error: string) => {
+          this.noficationService.onError(error);
           this.isLoadingubject.next(false);
           return of({ dataState: DataState.LOADED, error })
         })

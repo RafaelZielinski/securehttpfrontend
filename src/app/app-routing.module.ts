@@ -5,7 +5,7 @@ import { TestsComponent } from './component/tests/tests.component';
 import { AuthenticationGuard } from './guard/authentication.guard';
 
 const routes: Routes = [
-  { path: '/profile', loadChildren: () => import('./component/profile/user.module').then(module=> module.UserModule)},
+  { path: 'profile', loadChildren: () => import('./component/profile/user.module').then(module=> module.UserModule)},
   { path: '', redirectTo: '/', pathMatch: 'full'},
   { path: '**', component: HomeComponent, canActivate: [AuthenticationGuard]},
   { path: 'tests', component: TestsComponent, canActivate: [AuthenticationGuard] }

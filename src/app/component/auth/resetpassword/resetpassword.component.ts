@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
 import { RegisterState, ResetPasswordState } from 'src/app/interface/appstates';
+import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
 
 @Component({
@@ -16,18 +17,20 @@ export class ResetpasswordComponent {
   resetPasswordState$: Observable<ResetPasswordState> = of({ dataState: DataState.LOADED });
   readonly DataState = DataState;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private noficationService: NotificationService) {}
 
   resetPassword(resetPasswordForm: NgForm): void {
     console.log(resetPasswordForm.value.email)
     this.resetPasswordState$ = this.userService.requestPasswordReset$(resetPasswordForm.value.email)
     .pipe(
       map(response => {
+        this.noficationService.onDefault(response.message);
         console.log(response);
         return {dataState: DataState.LOADED, registerSuccess: true, message: response.message };
       }),
       startWith({dataState: DataState.LOADING, registerSuccess: false }),
       catchError((error: string) => {
+        this.noficationService.onError(error);
         return of({ dataState: DataState.ERROR, registerSuccess: false, error })
     })
     );

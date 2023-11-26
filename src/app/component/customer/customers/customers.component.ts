@@ -9,6 +9,7 @@ import { Customer } from 'src/app/interface/customer';
 import { State } from 'src/app/interface/state';
 import { User } from 'src/app/interface/user';
 import { CustomerService } from 'src/app/service/customer.service';
+import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
 
 @Component({
@@ -31,7 +32,7 @@ export class CustomersComponent {
   readonly DataState = DataState;
   readonly EventType = EventType;
 
-  constructor(private router: Router, private userService: UserService, private customerService: CustomerService) {
+  constructor(private router: Router, private userService: UserService, private customerService: CustomerService, private noficationService: NotificationService) {
   }
 
   ngOnInit(): void {
@@ -39,12 +40,14 @@ export class CustomersComponent {
     searchCustomers$('')
       .pipe(
         map(response => {
+          this.noficationService.onDefault(response.message);
           console.log(response);
           this.dataSubject.next(response);
           return {dataState: DataState.LOADED, appData: response};
         }),
         startWith({dataState: DataState.LOADING}),
         catchError((error: string) => {
+          this.noficationService.onError(error);
           return of({dataState: DataState.ERROR, error})
         })
       )
@@ -56,12 +59,14 @@ export class CustomersComponent {
     searchCustomers$(searchForm.value.name)
       .pipe(
         map(response => {
+          this.noficationService.onDefault(response.message);
           console.log(response);
           this.dataSubject.next(response);
           return {dataState: DataState.LOADED, appData: response};
         }),
         startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
+          this.noficationService.onError(error);
           return of({dataState: DataState.ERROR, error})
         })
       )

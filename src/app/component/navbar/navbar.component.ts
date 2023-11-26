@@ -3,6 +3,7 @@ import {User} from "../../interface/user";
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/service/user.service';
 import { Stats } from 'src/app/interface/stats';
+import { NotificationService } from 'src/app/service/notification.service';
 
 @Component({
   selector: 'app-navbar',
@@ -14,7 +15,7 @@ import { Stats } from 'src/app/interface/stats';
 export class NavbarComponent {
 
 
-  constructor(private router: Router, private userService: UserService) {
+  constructor(private router: Router, private userService: UserService, private notificationService: NotificationService) {
 
   }
   @Input() stats: Stats;
@@ -23,5 +24,7 @@ export class NavbarComponent {
   logOut():void {
       this.userService.logOut();
       this.router.navigate(['/login']);
+      this.notificationService.onDefault('You\'ve been successfully logged out');
+
   }
 }
