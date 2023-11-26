@@ -25,27 +25,24 @@ export class VerifyComponent {
   private readonly ACCOUNT_KEY: string = 'key';
 
 
-  constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private noficationService: NotificationService) {
+  constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private notification: NotificationService) {
   }
 
   ngOnInit(): void {
     this.verifyState$ = this.activatedRoute.paramMap.pipe(
       switchMap((params: ParamMap) => {
-        console.log(this.activatedRoute);
         const type: AccountType = this.getAccountType(window.location.href);
         return this.userService.verify$(params.get(this.ACCOUNT_KEY), type)
           .pipe(
             map(response => {
-              this.noficationService.onDefault(response.message);
-              console.log(response);
+              this.notification.onDefault(response.message);
               type === 'password' ? this.userSubject.next(response.data.user) : null;
-
               return {type, title: 'Verified!', dataState: DataState.LOADED, message: response.message, verifySuccess: true
               };
             }),
             startWith({ title: 'Verifying...', dataState: DataState.LOADING, message: 'Please wait while we verify the information', verifySuccess: false}),
             catchError((error: string) => {
-              this.noficationService.onError(error);
+              this.notification.onError(error);
               return of({title: 'An error occured', dataState: DataState.ERROR, error, message: error, verifySuccess: false})
             })
           );
@@ -58,15 +55,14 @@ export class VerifyComponent {
     this.verifyState$ = this.userService.renewPassword$({userId: this.userSubject.value.id, password: resetPasswordForm.value.password, confirmPassword: resetPasswordForm.value.confirmPassword})
       .pipe(
             map(response => {
-              this.noficationService.onDefault(response.message);
-              console.log(response);
+              this.notification.onDefault(response.message);
               this.isLoadingubject.next(false);
             return {type: 'account' as AccountType, title: 'Success!', dataState: DataState.LOADED, message: response.message, verifySuccess: true
               };
             }),
             startWith({ type: 'password'  as AccountType, title: 'Verified!', dataState: DataState.LOADED, verifySuccess: false}),
             catchError((error: string) => {
-              this.noficationService.onError(error);
+              this.notification.onError(error);
               this.isLoadingubject.next(false);
               return of({type: 'password'  as AccountType, title: error, dataState: DataState.LOADED, error,  verifySuccess: true})
             })

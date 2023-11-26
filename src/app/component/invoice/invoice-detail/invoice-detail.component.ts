@@ -27,7 +27,7 @@ export class InvoiceDetailComponent {
   readonly DataState = DataState;
   private readonly INVOICE_ID: string = 'id';
 
-  constructor(private activatedRoute: ActivatedRoute, private router: Router, private userService: UserService, private customerService: CustomerService, private noficationService: NotificationService) {
+  constructor(private activatedRoute: ActivatedRoute, private router: Router, private userService: UserService, private customerService: CustomerService, private notification: NotificationService) {
   }
 
   ngOnInit(): void {
@@ -36,14 +36,13 @@ export class InvoiceDetailComponent {
         return this.customerService.invoice$(+params.get(this.INVOICE_ID))
           .pipe(
             map(response => {
-              this.noficationService.onDefault(response.message);
-              console.log(response);
+              this.notification.onDefault(response.message);
               this.dataSubject.next(response);
               return { dataState: DataState.LOADED, appData: response };
             }),
             startWith({ dataState: DataState.LOADING }),
             catchError((error: string) => {
-              this.noficationService.onError(error);
+              this.notification.onError(error);
               return of({ dataState: DataState.ERROR, error })
             })
           )

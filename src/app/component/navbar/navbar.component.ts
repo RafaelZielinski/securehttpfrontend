@@ -15,7 +15,7 @@ import { NotificationService } from 'src/app/service/notification.service';
 export class NavbarComponent {
 
 
-  constructor(private router: Router, private userService: UserService, private notificationService: NotificationService) {
+  constructor(private router: Router, private userService: UserService, private notification: NotificationService) {
 
   }
   @Input() stats: Stats;
@@ -24,7 +24,7 @@ export class NavbarComponent {
   logOut():void {
       this.userService.logOut();
       this.router.navigate(['/login']);
-      this.notificationService.onDefault('You\'ve been successfully logged out');
+      this.notification.onDefault('You\'ve been successfully logged out');
 
   }
 }

@@ -22,20 +22,19 @@ export class NewInvoiceComponent {
   isLoading$ = this.isLoadingubject.asObservable();
   readonly DataState = DataState;
 
-  constructor(private customerService: CustomerService, private noficationService: NotificationService) { }
+  constructor(private customerService: CustomerService, private notification: NotificationService) { }
 
   ngOnInit(): void {
     this.newInvoiceState$ = this.customerService.newInvoice$()
       .pipe(
         map(response => {
-          this.noficationService.onDefault(response.message);
-          console.log(response);
+          this.notification.onDefault(response.message);
           this.dataSubject.next(response);
           return { dataState: DataState.LOADED, appData: response };
         }),
         startWith({ dataState: DataState.LOADING }),
         catchError((error: string) => {
-          this.noficationService.onError(error);
+          this.notification.onError(error);
           return of({ dataState: DataState.ERROR, error })
         })
       )
@@ -47,8 +46,7 @@ export class NewInvoiceComponent {
     this.newInvoiceState$ = this.customerService.createInvoice$(newInvoiceForm.value.customerId, newInvoiceForm.value)
       .pipe(
         map(response => {
-          this.noficationService.onDefault(response.message);
-          console.log(response);
+          this.notification.onDefault(response.message);
           newInvoiceForm.reset({status: 'PENDING'})
           this.isLoadingubject.next(false);
           this.dataSubject.next(response)
@@ -56,7 +54,7 @@ export class NewInvoiceComponent {
         }),
         startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
         catchError((error: string) => {
-          this.noficationService.onError(error);
+          this.notification.onError(error);
           this.isLoadingubject.next(false);
           return of({ dataState: DataState.LOADED, error })
         })

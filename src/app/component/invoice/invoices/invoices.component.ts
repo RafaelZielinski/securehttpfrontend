@@ -31,7 +31,7 @@ export class InvoicesComponent {
   readonly DataState = DataState;
   readonly EventType = EventType;
 
-  constructor(private router: Router, private userService: UserService, private customerService: CustomerService, private noficationService: NotificationService) {
+  constructor(private router: Router, private userService: UserService, private customerService: CustomerService, private notification: NotificationService) {
   }
 
   ngOnInit(): void {
@@ -39,14 +39,13 @@ export class InvoicesComponent {
       invoices$()
       .pipe(
         map(response => {
-          this.noficationService.onDefault(response.message);
-          console.log(response);
+          this.notification.onDefault(response.message);
           this.dataSubject.next(response);
           return { dataState: DataState.LOADED, appData: response };
         }),
         startWith({ dataState: DataState.LOADING }),
         catchError((error: string) => {
-          this.noficationService.onError(error);
+          this.notification.onError(error);
           return of({ dataState: DataState.ERROR, error })
         })
       )
@@ -56,15 +55,14 @@ export class InvoicesComponent {
     this.invoicesState$ = this.customerService.invoices$(pageNumber)
       .pipe(
         map(response => {
-          this.noficationService.onDefault(response.message);
-          console.log(response);
+          this.notification.onDefault(response.message);
           this.dataSubject.next(response);
           this.currentPageSubject.next(pageNumber);
           return { dataState: DataState.LOADED, appData: response };
         }),
         startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
         catchError((error: string) => {
-          this.noficationService.onError(error);
+          this.notification.onError(error);
           return of({ dataState: DataState.ERROR, error, appData: this.dataSubject.value })
         })
       )

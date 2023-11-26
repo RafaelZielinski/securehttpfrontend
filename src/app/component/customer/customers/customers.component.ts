@@ -32,23 +32,22 @@ export class CustomersComponent {
   readonly DataState = DataState;
   readonly EventType = EventType;
 
-  constructor(private router: Router, private userService: UserService, private customerService: CustomerService, private noficationService: NotificationService) {
+  constructor(private router: Router, private userService: UserService, private customerService: CustomerService, private notification: NotificationService) {
   }
 
   ngOnInit(): void {
     this.customerState$ = this.customerService.
-    searchCustomers$('')
+      searchCustomers$('')
       .pipe(
         map(response => {
-          this.noficationService.onDefault(response.message);
-          console.log(response);
+          this.notification.onDefault(response.message);
           this.dataSubject.next(response);
-          return {dataState: DataState.LOADED, appData: response};
+          return { dataState: DataState.LOADED, appData: response };
         }),
-        startWith({dataState: DataState.LOADING}),
+        startWith({ dataState: DataState.LOADING }),
         catchError((error: string) => {
-          this.noficationService.onError(error);
-          return of({dataState: DataState.ERROR, error})
+          this.notification.onError(error);
+          return of({ dataState: DataState.ERROR, error })
         })
       )
   }
@@ -56,40 +55,38 @@ export class CustomersComponent {
   searchCustomers(searchForm: NgForm): void {
     this.currentPageSubject.next(0);
     this.customerState$ = this.customerService.
-    searchCustomers$(searchForm.value.name)
+      searchCustomers$(searchForm.value.name)
       .pipe(
         map(response => {
-          this.noficationService.onDefault(response.message);
-          console.log(response);
+          this.notification.onDefault(response.message);
           this.dataSubject.next(response);
-          return {dataState: DataState.LOADED, appData: response};
+          return { dataState: DataState.LOADED, appData: response };
         }),
-        startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
+        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
         catchError((error: string) => {
-          this.noficationService.onError(error);
-          return of({dataState: DataState.ERROR, error})
+          this.notification.onError(error);
+          return of({ dataState: DataState.ERROR, error })
         })
       )
   }
-    goToPage(pageNumber?: number, name?: string): void {
-      this.customerState$ = this.customerService.searchCustomers$(name, pageNumber)
+  goToPage(pageNumber?: number, name?: string): void {
+    this.customerState$ = this.customerService.searchCustomers$(name, pageNumber)
       .pipe(
         map(response => {
-          console.log(response);
           this.dataSubject.next(response);
           this.currentPageSubject.next(pageNumber);
-          return {dataState: DataState.LOADED, appData: response};
+          return { dataState: DataState.LOADED, appData: response };
         }),
-        startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
+        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
         catchError((error: string) => {
-          return of({dataState: DataState.ERROR, error , appData: this.dataSubject.value})
+          return of({ dataState: DataState.ERROR, error, appData: this.dataSubject.value })
         })
       )
-      }
-      
-    goToNextOrPreviosPage(direction?: string, name?: string): void {
+  }
+
+  goToNextOrPreviosPage(direction?: string, name?: string): void {
     this.goToPage(direction === 'forward' ? this.currentPageSubject.value + 1 : this.currentPageSubject.value - 1, name);
-    }  
+  }
 
   selectCustomer(customer: Customer): void {
     this.router.navigate([`/customers/${customer.id}`]);

@@ -63,6 +63,7 @@ export type AccountType = 'account' | 'password';
 
 export interface VerifyState {
     dataState: DataState;
+    //this one i don't use actually verifySuccess
     verifySuccess?: boolean;
     error?: string;
     message?: string;
