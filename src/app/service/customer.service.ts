@@ -6,13 +6,14 @@ import { User } from "../interface/user";
 import { Stats } from '../interface/stats';
 import { Customer } from '../interface/customer';
 import { Invoice } from '../interface/invoice';
+import { environment } from 'src/environments/environment';
 
 @Injectable(
 
 )
 export class CustomerService {
 
-  private readonly server: string = 'http://localhost:8095';
+  private readonly server: string = environment.API_BASE_URL;
 
   constructor(private http: HttpClient,) {
   }

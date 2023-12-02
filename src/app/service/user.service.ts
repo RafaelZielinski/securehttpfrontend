@@ -5,11 +5,12 @@ import { Observable, catchError, tap, throwError, pipe } from 'rxjs';
 import { AccountType, CustomHttpResponse, Profile, RegisterState } from '../interface/appstates';
 import { User } from "../interface/user";
 import { Key } from "../enum/key.enum";
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class UserService {
 
-  private readonly server: string = 'http://localhost:8095';
+  private readonly server: string = environment.API_BASE_URL;
   private jwtHelper = new JwtHelperService();
 
   constructor(private http: HttpClient,) {
