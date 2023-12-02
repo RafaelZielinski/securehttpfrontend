@@ -1,0 +1,14 @@
+services:
+  securehttpapp:
+    container_name: securehttpappcontainer
+    build: .
+    image: securehttpapp:v1
+    ports:
+      - 80:80
+    expose:
+      - 80
+    networks:  
+      - internalnet
+networks:
+  internalnet:
+    driver: bridge
